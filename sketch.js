@@ -1,75 +1,50 @@
 // ToDo
-// - create fact list - more interesting - more life related
-// - add soundscape
+// - add to data list
+
 
 let nwaves = 10;
 let waves = [];
 
-let facts; // read from text file
-let f; // random line
-let fNew; // formated (newline)
+let data; // read from text file
+let ri = 0; // random integer
+let rline; // random line
+let rlineFormat; // formated (newline)
 
-let soundscape;
-let button; // generates new fact
+let button; // generates new fact (Grounding)
+
+let timer;
+let interval = 10000; // 10s
 
 function preload() {
-  facts = loadStrings('assets/facts.txt');
-  // soundscape = loadSound('assets/temp.mp3');
+  data = loadStrings('assets/data.txt');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-
   noStroke();
   textFont('Georgia');
-  makeButton("Grounding");
 
-  //soundscape.play();
+  setupButton("Grounding");
+  setupWaves();
+  updateText();
 
-  formatFact();
-
-  for (let i = 0; i < nwaves + 1; i++) {
-    let opacity_val = map(i, 0, nwaves+1, 255, 0);
-    let offset_val = map(i, 0, nwaves+1, 10, 20*(i/2.0));
-    let xinc_val = map(i, 0, nwaves+1, 0.01, 0.1);
-    let yinc_val = map(i, 0, nwaves+1, 0.05, 0.001);
-    waves.push(new Wave(opacity_val, offset_val, xinc_val, yinc_val));
-  }
+  timer = interval; 
 }
 
 
 function draw() {
   background("#f1d7b9");
 
-  // stroke(50);
-  for (let i = 0; i < waves.length; i++) {
-    waves[i].display();
+  if (millis() > timer) {
+    updateText(); // timer is reset within pickLine()
   }
-
-  // masking circle
-  push();
-  noFill();
-  stroke("#f1d7b9");
-  strokeWeight(200);
-  circle(windowWidth/2,windowHeight/2,800);
-  pop();
-  
-  textAlign(CENTER);
-  fill(255);
-  noStroke();
-  textSize(14);
-  text('gain perspective with these words.',windowWidth/2, windowHeight/2 - 35);
-
-  // display fact
-  fill(20);
-  textSize(20);
-  textStyle(ITALIC);
-  text(fNew,windowWidth/2, windowHeight/4);
-  
+  // stroke(50);
+  displayWaves();
+  displayText();  
 }
 
 // button functions
-function makeButton(txt) {
+function setupButton(txt) {
   button = createButton(txt);
   button.style("font-family", "Georgia");
   button.style("color", "#fff");
@@ -80,7 +55,7 @@ function makeButton(txt) {
   
   button.center();
   
-  button.mousePressed(formatFact);
+  button.mousePressed(updateText);
   button.mouseOver(hoverBold);
   button.mouseOut(hoverNormal);
 }
@@ -97,20 +72,66 @@ function hoverNormal() {
   button.center();
 }
 
+// randomise & format line
+function updateText() {
+  timer += interval; // reset timer
 
-function formatFact() {
-  f = random(facts);
+  let ri_tmp = int(random(0,data.length));
+  while(ri_tmp == ri) {
+    ri_tmp = int(random(0,data.length));
+  }
+  ri = ri_tmp;
+  rline = data[ri];
   
-  fNew = '';
+  rlineFormat = '';
   let c = 0;
-  for (let i = 0; i < f.length; i++) {
-    fNew += f[i]; 
-    if ((c >= 40 ) & (f[i] == ' ')) {
-      fNew += '\n';
+  for (let i = 0; i < rline.length; i++) {
+    rlineFormat += rline[i]; 
+    if ((c >= 40 ) & (rline[i] == ' ')) {
+      rlineFormat += '\n';
       c = 0;
     }
     c++;
   }
+}
+
+
+function displayText() {
+  textAlign(CENTER);
+  fill(255);
+  noStroke();
+  textSize(14);
+  text('gain perspective with these words.',windowWidth/2, windowHeight/2 - 35);
+
+  // display fact
+  fill(20);
+  textSize(20);
+  textStyle(ITALIC);
+  text(rlineFormat,windowWidth/2, windowHeight/4);
+}
+
+
+function setupWaves() {
+  for (let i = 0; i < nwaves + 1; i++) {
+    let opacity_val = map(i, 0, nwaves+1, 255, 0);
+    let offset_val = map(i, 0, nwaves+1, 10, 20*(i/2.0));
+    let xinc_val = map(i, 0, nwaves+1, 0.01, 0.1);
+    let yinc_val = map(i, 0, nwaves+1, 0.05, 0.001);
+    waves.push(new Wave(opacity_val, offset_val, xinc_val, yinc_val));
+  }
+}
+
+function displayWaves() {
+  for (let i = 0; i < waves.length; i++) {
+    waves[i].display();
+  }
+  // masking circle
+  push();
+  noFill();
+  stroke("#f1d7b9");
+  strokeWeight(200);
+  circle(windowWidth/2,windowHeight/2,800);
+  pop();
 }
 
 
