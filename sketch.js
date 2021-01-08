@@ -15,12 +15,21 @@ let button; // generates new fact (Grounding)
 let timer = 0;
 let interval = 10000; // 10s
 
+let fontSize;
+
 function preload() {
   data = loadStrings('assets/data.txt');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  if (windowWidth < 600) {
+    fontSize = 16;
+  } else {
+    fontSize = 20;
+  }
+
   noStroke();
   textFont('Georgia');
 
@@ -103,9 +112,9 @@ function displayText() {
   textSize(14);
   text('gain perspective with these words.',windowWidth/2, windowHeight/2 - 35);
 
-  // display fact
+  // display phrase
   fill(20);
-  textSize(20);
+  textSize(fontSize);
   textStyle(ITALIC);
   text(rlineFormat,windowWidth/2, windowHeight/4);
 }
@@ -148,7 +157,12 @@ class Wave {
     fill(41, 60, 74,this.opacity);
     beginShape();
     let xoff = 0;
-    let waveWidth = 400;
+    let waveWidth;
+    if (windowWidth < 600) {
+      waveWidth = 200;
+    } else {
+      waveWidth = 400;
+    }
     let waveHeight = 300;
     for (let x = width/2 - waveWidth; x <= width/2 + waveWidth; x += 10) {
       let y = map(noise(xoff, this.yoff), 0, 1, 100, 200);
@@ -165,4 +179,12 @@ class Wave {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   button.center();
+
+  if (windowWidth < 600) {
+    fontSize = 16;
+  } else {
+    fontSize = 20;
+  }
+
+  print(windowWidth);
 }
