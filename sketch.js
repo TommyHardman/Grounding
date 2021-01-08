@@ -1,11 +1,16 @@
-let waves = [];
-let nwaves = 10;
+// ToDo
+// - create fact list - more interesting - more life related
+// - add soundscape
 
-let facts;
-let f;
-let fNew;
+let nwaves = 10;
+let waves = [];
+
+let facts; // read from text file
+let f; // random line
+let fNew; // formated (newline)
 
 let soundscape;
+let button; // generates new fact
 
 function preload() {
   facts = loadStrings('assets/facts.txt');
@@ -14,11 +19,14 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
   noStroke();
   textFont('Georgia');
-  formatFact();
+  makeButton("Grounding");
 
   //soundscape.play();
+
+  formatFact();
 
   for (let i = 0; i < nwaves + 1; i++) {
     let opacity_val = map(i, 0, nwaves+1, 255, 0);
@@ -38,6 +46,7 @@ function draw() {
     waves[i].display();
   }
 
+  // masking circle
   push();
   noFill();
   stroke("#f1d7b9");
@@ -48,19 +57,45 @@ function draw() {
   textAlign(CENTER);
   fill(255);
   noStroke();
-  textSize(32);
-  text('Grounding',windowWidth/2, windowHeight/2 - 70);
-  textSize(12);
-  text('gain perspective with these facts.',windowWidth/2, windowHeight/2 - 55);
+  textSize(14);
+  text('gain perspective with these facts.',windowWidth/2, windowHeight/2 - 45);
 
-  // textAlign(LEFT);
+  // display fact
   fill(20);
   textSize(20);
   text(fNew,windowWidth/2, windowHeight/4);
-
-  
   
 }
+
+// button functions
+function makeButton(txt) {
+  button = createButton(txt);
+  button.style("font-family", "Georgia");
+  button.style("color", "#fff");
+  button.style("font-size","32pt");
+  button.style("background-color", "#f1d7b9");
+  button.style("border-style", "none");
+  button.style("outline","none");
+  
+  button.center();
+  
+  button.mousePressed(formatFact);
+  button.mouseOver(hoverBold);
+  button.mouseOut(hoverNormal);
+}
+
+function hoverBold() {
+  button.style("color", "rgb(200,100,100)");
+  button.style("font-weight","bold");
+  button.style("cursor", "pointer");
+  button.center();
+}
+function hoverNormal() {
+  button.style("color", "#fff");
+  button.style("font-weight","normal");
+  button.center();
+}
+
 
 function formatFact() {
   f = random(facts);
@@ -76,6 +111,7 @@ function formatFact() {
     c++;
   }
 }
+
 
 class Wave {
   constructor(opacity, offset, xinc, yinc) {
@@ -106,4 +142,5 @@ class Wave {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  button.center();
 }
