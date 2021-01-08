@@ -58,11 +58,12 @@ function draw() {
   fill(255);
   noStroke();
   textSize(14);
-  text('gain perspective with these facts.',windowWidth/2, windowHeight/2 - 45);
+  text('gain perspective with these words.',windowWidth/2, windowHeight/2 - 35);
 
   // display fact
   fill(20);
   textSize(20);
+  textStyle(ITALIC);
   text(fNew,windowWidth/2, windowHeight/4);
   
 }
