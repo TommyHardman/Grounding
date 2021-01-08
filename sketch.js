@@ -12,7 +12,7 @@ let rlineFormat; // formated (newline)
 
 let button; // generates new fact (Grounding)
 
-let timer;
+let timer = 0;
 let interval = 10000; // 10s
 
 function preload() {
@@ -28,16 +28,13 @@ function setup() {
   setupWaves();
   updateText();
 
-  timer = interval; 
+  timer = setInterval(updateText, interval);
 }
 
 
 function draw() {
   background("#f1d7b9");
 
-  if (millis() > timer) {
-    updateText(); // timer is reset within pickLine()
-  }
   // stroke(50);
   displayWaves();
   displayText();  
@@ -52,12 +49,16 @@ function setupButton(txt) {
   button.style("background-color", "#f1d7b9");
   button.style("border-style", "none");
   button.style("outline","none");
-  
-  button.center();
-  
-  button.mousePressed(updateText);
+  button.center();  
+  button.mousePressed(mouseClick);
   button.mouseOver(hoverBold);
   button.mouseOut(hoverNormal);
+}
+
+function mouseClick() {
+  clearInterval(timer);
+  timer = setInterval(updateText, interval);
+  updateText();
 }
 
 function hoverBold() {
@@ -74,7 +75,6 @@ function hoverNormal() {
 
 // randomise & format line
 function updateText() {
-  timer += interval; // reset timer
 
   let ri_tmp = int(random(0,data.length));
   while(ri_tmp == ri) {
