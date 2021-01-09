@@ -8,7 +8,6 @@ let waves = [];
 let data; // read from text file
 let ri = 0; // random integer
 let rline; // random line
-let rlineFormat; // formated (newline)
 
 let button; // generates new fact (Grounding)
 
@@ -17,6 +16,8 @@ let interval = 10000; // 10s
 
 let fontSize;
 
+let div; // updated phrase entry
+
 function preload() {
   data = loadStrings('assets/data.txt');
 }
@@ -24,7 +25,10 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  if (windowWidth < 600) {
+  div = createP('');
+  div.id('textDiv');
+ 
+  if (isMobile()) {
     fontSize = 16;
   } else {
     fontSize = 20;
@@ -86,22 +90,11 @@ function hoverNormal() {
 function updateText() {
 
   let ri_tmp = int(random(0,data.length));
-  while(ri_tmp == ri) {
+  while(ri_tmp == ri) { // make sure different to previous
     ri_tmp = int(random(0,data.length));
   }
   ri = ri_tmp;
   rline = data[ri];
-  
-  rlineFormat = '';
-  let c = 0;
-  for (let i = 0; i < rline.length; i++) {
-    rlineFormat += rline[i]; 
-    if ((c >= 40 ) & (rline[i] == ' ')) {
-      rlineFormat += '\n';
-      c = 0;
-    }
-    c++;
-  }
 }
 
 
@@ -114,9 +107,8 @@ function displayText() {
 
   // display phrase
   fill(20);
-  textSize(fontSize);
-  textStyle(ITALIC);
-  text(rlineFormat,windowWidth/2, windowHeight/4);
+  div.html(rline);
+  div.style("font-size", fontSize + "px");
 }
 
 
@@ -143,6 +135,13 @@ function displayWaves() {
   pop();
 }
 
+function isMobile() {
+  if (windowWidth < 600) {
+    return true;
+  }
+  return false;
+}
+
 
 class Wave {
   constructor(opacity, offset, xinc, yinc) {
@@ -158,7 +157,7 @@ class Wave {
     beginShape();
     let xoff = 0;
     let waveWidth;
-    if (windowWidth < 600) {
+    if (isMobile()) {
       waveWidth = 200;
     } else {
       waveWidth = 400;
@@ -180,7 +179,7 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   button.center();
 
-  if (windowWidth < 600) {
+  if (isMobile()) {
     fontSize = 16;
   } else {
     fontSize = 20;

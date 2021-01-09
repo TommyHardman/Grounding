@@ -3,6 +3,20 @@ html, body {
   padding: 0;
 }
 
+#textDiv {
+  width: 50%;
+  max-width: 500px;
+  height: 50%;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  text-align: center;
+  line-height: 30px;
+  /* border: 1px solid red; */
+  font-style: italic;
+}
+
 canvas {
   display: block;
 }
