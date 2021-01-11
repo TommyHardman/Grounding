@@ -6,8 +6,9 @@ let nwaves = 10;
 let waves = [];
 
 let data; // read from text file
-let ri = 0; // random integer
 let rline; // random line
+let rArray = []; // shuffed line array
+let rIndex = 0; // current cycle index
 
 let button; // generates new fact (Grounding)
 
@@ -15,6 +16,10 @@ let timer = 0;
 let interval = 10000; // 10s
 
 let fontSize;
+let mobileFontSize = 14;
+let normalFontSize = 20;
+
+let mobileWindowWidth = 600;
 
 let div; // updated phrase entry
 
@@ -25,13 +30,19 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+  for (let i = 0; i < data.length; i++) {
+    rArray.push(i);
+  }
+  shuffle(rArray, true);
+  console.log(rArray);
+
   div = createP('');
   div.id('textDiv');
  
   if (isMobile()) {
-    fontSize = 16;
+    fontSize = mobileFontSize;
   } else {
-    fontSize = 20;
+    fontSize = normalFontSize;
   }
 
   noStroke();
@@ -62,10 +73,22 @@ function setupButton(txt) {
   button.style("background-color", "#f1d7b9");
   button.style("border-style", "none");
   button.style("outline","none");
-  button.center();  
+  
+  buttonPosition();
+  
   button.mousePressed(mouseClick);
   button.mouseOver(hoverBold);
   button.mouseOut(hoverNormal);
+}
+
+function buttonPosition() {
+  if (isMobile()) {
+    button.center('horizontal');
+    button.position(button.position.x, windowHeight * 0.05);
+    console.log(button.width);
+  } else {
+    button.center();
+  }
 }
 
 function mouseClick() {
@@ -78,23 +101,21 @@ function hoverBold() {
   button.style("color", "rgb(200,100,100)");
   button.style("font-weight","bold");
   button.style("cursor", "pointer");
-  button.center();
+  buttonPosition();
 }
 function hoverNormal() {
   button.style("color", "#fff");
   button.style("font-weight","normal");
-  button.center();
+  buttonPosition();
 }
 
 // randomise & format line
 function updateText() {
-
-  let ri_tmp = int(random(0,data.length));
-  while(ri_tmp == ri) { // make sure different to previous
-    ri_tmp = int(random(0,data.length));
+  rline = data[rArray[rIndex]];
+  rIndex++;
+  if (rIndex >= rArray.length) {
+    rIndex = 0;
   }
-  ri = ri_tmp;
-  rline = data[ri];
 }
 
 
@@ -102,9 +123,13 @@ function displayText() {
   textAlign(CENTER);
   fill(255);
   noStroke();
-  textSize(14);
-  text('gain perspective with these words.',windowWidth/2, windowHeight/2 - 35);
-
+  if (isMobile()) {
+    textSize(mobileFontSize - 2);
+    text('gain perspective with these words.',windowWidth/2, windowHeight * 0.04);
+  } else {
+    textSize(mobileFontSize);
+    text('gain perspective with these words.',windowWidth/2, windowHeight/2 - 35);
+  }
   // display phrase
   fill(20);
   div.html(rline);
@@ -136,7 +161,7 @@ function displayWaves() {
 }
 
 function isMobile() {
-  if (windowWidth < 600) {
+  if (windowWidth < mobileWindowWidth) {
     return true;
   }
   return false;
@@ -177,12 +202,12 @@ class Wave {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  button.center();
+  buttonPosition();
 
   if (isMobile()) {
-    fontSize = 16;
+    fontSize = mobileFontSize;
   } else {
-    fontSize = 20;
+    fontSize = normalFontSize;
   }
 
   print(windowWidth);

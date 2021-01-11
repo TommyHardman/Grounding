@@ -4,8 +4,7 @@ html, body {
 }
 
 #textDiv {
-  width: 50%;
-  max-width: 500px;
+  width: 70%;
   height: 50%;
   overflow: auto;
   margin: auto;
