@@ -13,7 +13,7 @@ let rIndex = 0; // current cycle index
 let button; // generates new fact (Grounding)
 
 let timer = 0;
-let interval = 10000; // 10s
+let interval = 15000; // 15s
 
 let fontSize;
 let mobileFontSize = 14;
